@@ -2,6 +2,7 @@
 
 ## LINKS 
 
+- [Template Forms from Angular.io](#templateAngular)
 - [Reactive Forms from Angular.io](#reactiveAngular)
 
 # ORDER OF TASKS TO DO WHEN CREATING A NEW TEMPLATE FORM
@@ -19,7 +20,7 @@
 - Handle form submission with ngSubmit.
 - Disable the form’s Submit button until the form is valid.
 
-# FROM THE ANGULAR WEBSITE TUTORIAL - TEMPLATE FORMS
+# <a name="templateAngular"></a> TEMPLATE FORMS FROM ANGULAR.IO
 
 - https://angular.io/guide/forms
 - ng generate class Hero
