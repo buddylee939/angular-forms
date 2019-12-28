@@ -1,3 +1,243 @@
+# ORDER OF TASKS TO DO WHEN CREATING A NEW TEMPLATE FORM
+
+- You'll build this form in small steps:
+
+- Create the Hero model class.
+- Create the component that controls the form.
+- Create a template with the initial form layout.
+- Bind data properties to each form control using the ngModel two-way data-binding syntax.
+- Add a name attribute to each form-input control.
+- Add custom CSS to provide visual feedback.
+- Show and hide validation-error messages.
+- Handle form submission with ngSubmit.
+- Disable the form’s Submit button until the form is valid.
+
+# FROM THE ANGULAR WEBSITE TUTORIAL - TEMPLATE FORMS
+
+- https://angular.io/guide/forms
+- ng generate class Hero
+- ng g c heroes
+- ng g cl Hero
+- update hero.ts
+
+
+```
+export class Hero {
+
+  constructor(
+    public id: number,
+    public name: string,
+    public power: string,
+    public alterEgo?: string
+  ) {  }
+
+}
+```
+
+- ng generate component HeroForm
+- update hero-form.comp.ts
+
+```
+import { Component, OnInit } from '@angular/core';
+import { Hero } from '../hero';
+
+@Component({
+  selector: 'app-hero-form',
+  templateUrl: './hero-form.component.html',
+  styleUrls: ['./hero-form.component.scss']
+})
+export class HeroFormComponent {
+
+  powers = ['Really Smart', 'Super Flexible',
+            'Super Hot', 'Weather Changer'];
+
+  model = new Hero(18, 'Dr IQ', this.powers[0], 'Chuck Overstreet');
+
+  submitted = false;
+
+  onSubmit() { this.submitted = true; }
+
+  // TODO: Remove this when we're done
+  get diagnostic() { return JSON.stringify(this.model); }
+}
+
+```
+
+- update hero.comp.html
+
+```
+<div class="container">
+  <h1>Hero Form</h1>
+  <form>
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" required>
+    </div>
+
+    <div class="form-group">
+      <label for="alterEgo">Alter Ego</label>
+      <input type="text" class="form-control" id="alterEgo">
+    </div>
+    <div class="form-group">
+      <label for="power">Hero Power</label>
+      <select class="form-control" id="power" required>
+        <option *ngFor="let pow of powers" [value]="pow">{{pow}}</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+
+  </form>
+</div>
+
+```
+
+- UPDATE THE FORM WITH 2 Way Binding (the diagnostic displays the data)
+
+```
+<div class="container">
+  <h1>Hero Form</h1>
+  <form #heroForm="ngForm">
+    {{diagnostic}}
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name"
+             required
+             [(ngModel)]="model.name" name="name">
+    </div>
+
+    <div class="form-group">
+      <label for="alterEgo">Alter Ego</label>
+      <input type="text"  class="form-control" id="alterEgo"
+             [(ngModel)]="model.alterEgo" name="alterEgo">
+    </div>
+
+    <div class="form-group">
+      <label for="power">Hero Power</label>
+      <select class="form-control"  id="power"
+              required
+              [(ngModel)]="model.power" name="power">
+        <option *ngFor="let pow of powers" [value]="pow">{{pow}}</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+
+  </form>
+</div>
+```
+
+- Track control state and validity with ngModel
+- to see the current classes set on the input, update the name input field with a #spy variable
+
+```
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name"
+             required
+             [(ngModel)]="model.name" name="name" #spy>
+             <br>TODO: remove this: {{spy.className}}
+    </div>
+```
+
+- update hero-form.comp.scss to update with errors
+
+```
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442; /* red */
+}
+```
+
+- displaying the error message when the input isn't valid
+
+```
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name"
+             required
+             [(ngModel)]="model.name" name="name"
+             #name="ngModel" #spy>
+             <br>TODO: remove this: {{spy.className}}
+      <div [hidden]="name.valid || name.pristine"
+           class="alert alert-danger">
+        Name is required
+      </div>
+            </div>
+```
+
+- update the submit button
+
+```
+<button type="button" class="btn btn-default" (click)="newHero()">New Hero</button>
+```
+
+- add to the hero-form.comp.ts
+
+```
+newHero() {
+  this.model = new Hero(42, '', '');
+}
+```
+
+- refresh and add a new hero, the form emptys and the validation appears
+- to update all the validation fields, we need the form reset
+
+```
+<button type="button" class="btn btn-default" (click)="newHero(); heroForm.reset()">New Hero</button>
+```
+
+- update the form, to submit the form
+
+```
+<form (ngSubmit)="onSubmit()" #heroForm="ngForm">
+```
+
+- update the button fi form is invallid
+
+```
+<button type="submit" class="btn btn-success" [disabled]="!heroForm.form.valid">Submit</button>
+```
+
+- hiding the form when submitted
+- add a div around the form
+
+```
+<div [hidden]="submitted">
+  <h1>Hero Form</h1>
+  <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
+
+     <!-- ... all of the form ... -->
+
+  </form>
+</div>
+```
+
+- add a div below the 'hidden' form div, to display once the form has been submitted
+
+```
+<div [hidden]="!submitted">
+  <h2>You submitted the following:</h2>
+  <div class="row">
+    <div class="col-xs-3">Name</div>
+    <div class="col-xs-9">{{ model.name }}</div>
+  </div>
+  <div class="row">
+    <div class="col-xs-3">Alter Ego</div>
+    <div class="col-xs-9">{{ model.alterEgo }}</div>
+  </div>
+  <div class="row">
+    <div class="col-xs-3">Power</div>
+    <div class="col-xs-9">{{ model.power }}</div>
+  </div>
+  <br>
+  <button class="btn btn-primary" (click)="submitted=false">Edit</button>
+</div>
+```
+
+## END OF ANGULAR SITE - TEMPLATE FORMS
+
 # ANGULAR FORMS TUTORIALS - YOUTUBE
 
 ## TEMPLATE DRIVEN FORMS - TDF

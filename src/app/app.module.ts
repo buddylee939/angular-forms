@@ -9,6 +9,8 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 import { TdfComponent } from './components/tdf/tdf.component';
 import { CarsListComponent } from './cars/cars-list/cars-list.component';
 import { CarNewComponent } from './cars/car-new/car-new.component';
+import { HeroesComponent } from './heroes/heroes.component';
+import { HeroFormComponent } from './heroes/hero-form/hero-form.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { CarNewComponent } from './cars/car-new/car-new.component';
     NavbarComponent,
     TdfComponent,
     CarsListComponent,
-    CarNewComponent
+    CarNewComponent,
+    HeroesComponent,
+    HeroFormComponent
   ],
   imports: [
     BrowserModule,
