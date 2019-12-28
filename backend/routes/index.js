@@ -8,7 +8,13 @@ router.get('/', function(req, res, next) {
 
 router.post('/enroll', function(req, res, next) {
   console.log(req.body);
-  res.status(401);
+  // res.status(401);
+  res.send({'Status':'User Created'});
+});
+
+router.post('/registration', function(req, res, next) {
+  console.log(req.body);
+  // res.status(401);
   res.send({'Status':'User Created'});
 });
 module.exports = router;

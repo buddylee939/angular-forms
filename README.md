@@ -1085,4 +1085,1175 @@ module
 
 <hr>
 
-## REACTIVE FORMS
+# REACTIVE FORMS
+
+## FROM YOUTUBE ANGULAR FORMS - CODEVOLUTION
+
+- notes on reactive forms
+
+```
+code and the logic resides in the component class
+no two way binding
+well suited for complex scenarios
+dynamic form fields - like adding extra phone numbers
+custom validation - like for passwords
+dynamic validation - like if user wants to subscribe then the email field appears
+unit test 
+reactive forms require more code and a bit more complex
+```
+
+- in terminal: ng g c components/reactive
+- add the route to app-routing.module
+
+```
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'cars' },
+  { path: 'cars', component: CarsListComponent },
+  { path: 'car/new', component: CarNewComponent },
+  { path: 'tdf', component: TdfComponent },
+  { path: 'reactive', component: ReactiveComponent },
+  { path: 'hero', component: HeroFormComponent },
+];
+```
+
+- add the link to the navbar
+
+
+```
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" routerLink="/">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/tdf">Template Forms</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/reactive">Reactive Forms</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/cars">Cars</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/hero">Hero</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+```
+
+- in reactive.comp.html create the basic form
+
+```
+<div class="container-fluid">
+  <h2>Registration Form</h2>
+  <form action="">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" name="" id="username" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="" class="form-control">
+    </div>
+    <button class="btn btn-primary" type="submit">Register</button>
+  </form>
+</div>
+```
+
+- update app.module.ts
+
+```
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
+  ],
+```
+
+- IN REACTIVE THE 'FORM GROUP' is the whole form and the 'FORM CONTROL' is each individual field
+- ADD THE FORM GROUP AND FORM CONTROLS TO THE .TS and the .HTML
+- update reactive.comp.ts file
+
+```
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-reactive',
+  templateUrl: './reactive.component.html',
+  styleUrls: ['./reactive.component.scss']
+})
+export class ReactiveComponent implements OnInit {
+  registrationForm = new FormGroup({
+    userName: new FormControl('Pep'),
+    password: new FormControl(''),
+    confirmPassword: new FormControl('')
+  });
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}
+```
+
+- update reactive.comp.html
+
+```
+<div class="container-fluid">
+  <h2>Registration Form</h2>
+  <form [formGroup]="registrationForm">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        formControlName="userName"
+        type="text"
+        name=""
+        id="username"
+        class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        formControlName="password"
+        type="password"
+        id="password"
+        name=""
+        class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        formControlName="confirmPassword"
+        type="password"
+        id="confirmPassword"
+        name=""
+        class="form-control">
+    </div>
+    <button class="btn btn-primary" type="submit">Register</button>
+  </form>
+  {{ registrationForm.value | json }}
+</div>
+```
+
+- ADDING AN ADDRESS FORM GROUP TO THE REGISTRATION FORM GROUP
+- update the reactive.comp.html
+
+```
+<div class="container-fluid">
+  <h2>Registration Form</h2>
+  {{ registrationForm.value | json }}
+  <form [formGroup]="registrationForm">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        formControlName="userName"
+        type="text"
+        name=""
+        id="username"
+        class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        formControlName="password"
+        type="password"
+        id="password"
+        name=""
+        class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        formControlName="confirmPassword"
+        type="password"
+        id="confirmPassword"
+        name=""
+        class="form-control">
+    </div>
+    <div formGroupName="address">
+      <div class="form-group">
+        <label for="city">City</label>
+        <input
+          formControlName="city"
+          type="text"
+          class="form-control"
+          id="city">
+      </div>
+      <div class="form-group">
+        <label for="state">State</label>
+        <input
+          formControlName="state"
+          type="text"
+          class="form-control"
+          id="state">
+      </div>
+      <div class="form-group">
+        <label for="postalCode">Postal Code</label>
+        <input
+          formControlName="postalCode"
+          type="text"
+          class="form-control"
+          id="postalCode">
+      </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Register</button>
+  </form>
+
+</div>
+
+```
+
+- update reactive.comp.ts
+
+```
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-reactive',
+  templateUrl: './reactive.component.html',
+  styleUrls: ['./reactive.component.scss']
+})
+export class ReactiveComponent implements OnInit {
+  registrationForm = new FormGroup({
+    userName: new FormControl('Pep'),
+    password: new FormControl(''),
+    confirmPassword: new FormControl(''),
+    address: new FormGroup({
+      city: new FormControl(''),
+      state: new FormControl(''),
+      postalCode: new FormControl('')
+    })
+  });
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}
+```
+
+- ADDING CONTROL VALUES, FORM API CALLS
+- add a button to the form, below the register submit
+
+```
+    <button
+      (click)="loadApiData()"
+      class="btn btn-secondary ml-2"
+      type="button">Load API Data</button>
+```
+
+- update reactive.comp.ts and create the loadApiData method
+
+```
+  loadApiData() {
+    this.registrationForm.setValue({
+      userName: 'Bruce',
+      password: 'asdf',
+      confirmPassword: 'asdf',
+      address: {
+        city: 'Miami',
+        state: 'FL',
+        postalCode: '33123'
+      }
+    });
+  }
+```
+
+- click the button and it should load the data using the 'setValue' method
+- to populate all except the address fields, update the loadApiData method in the reactive.comp.ts to use a 'patchValue' method, because the 'setValue' method requires all the fields that the original from group has
+
+```
+
+  loadApiData() {
+    this.registrationForm.patchValue({
+      userName: 'Bruce',
+      password: 'asdf',
+      confirmPassword: 'asdf'
+    });
+  }
+```
+
+- USING FORM BUILDERS
+- how to refactor the code to a form builder
+- update the code in reactive.comp.ts
+
+```
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+
+@Component({
+  selector: 'app-reactive',
+  templateUrl: './reactive.component.html',
+  styleUrls: ['./reactive.component.scss']
+})
+export class ReactiveComponent implements OnInit {
+  constructor(
+    private fb: FormBuilder
+    ) { }
+
+  registrationForm = this.fb.group({
+    userName: ['Pep'],
+    password: [''],
+    confirmPassword: [''],
+    address: this.fb.group({
+      city: [''],
+      state: [''],
+      postalCode: ['']
+    })
+  });
+
+  ngOnInit() {
+  }
+
+  // registrationForm = new FormGroup({
+  //   userName: new FormControl('Pep'),
+  //   password: new FormControl(''),
+  //   confirmPassword: new FormControl(''),
+  //   address: new FormGroup({
+  //     city: new FormControl(''),
+  //     state: new FormControl(''),
+  //     postalCode: new FormControl('')
+  //   })
+  // });
+
+  // loadApiData() {
+  //   this.registrationForm.setValue({
+  //     userName: 'Bruce',
+  //     password: 'asdf',
+  //     confirmPassword: 'asdf',
+  //     address: {
+  //       city: 'Miami',
+  //       state: 'FL',
+  //       postalCode: '33123'
+  //     }
+  //   });
+  // }
+
+  loadApiData() {
+    this.registrationForm.patchValue({
+      userName: 'Bruce',
+      password: 'asdf',
+      confirmPassword: 'asdf'
+    });
+  }
+
+}
+```
+
+- ADDING VALIDATION
+- reactive uses the same STATE and VALIDITY as in template forms
+- in reactive forms, the validation is done in the component class instead of the templates(HTML)
+- 3 steps:
+
+```
+1) apply the validation rule to a form control
+2) provide visual feedback for the validation
+3) display the appropriate error message for the validation
+```
+
+- 1) APPLYING THE VALIDATION
+- update reactive.comp.ts username with validators
+
+```
+  registrationForm = this.fb.group({
+    userName: ['Pep', Validators.required],
+    password: [''],
+    confirmPassword: [''],
+    address: this.fb.group({
+      city: [''],
+      state: [''],
+      postalCode: ['']
+    })
+  });
+```
+
+- 2) PROVIDE VISUAL FEEDBACK
+- update reactive.comp.html name input to test for the validity
+
+```
+      <input
+        [class.is-invalid]="registrationForm.get('userName').invalid && registrationForm.get('userName').touched"
+        formControlName="userName"
+        type="text"
+        name=""
+        id="username"
+        class="form-control">
+```
+
+- refresh and erase the name and leave the input box, it should turn red
+- 3) DISPLAY ERROR MESSAGES
+- update the div holding the name input in the reactive.comp.html
+
+```
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        [class.is-invalid]="registrationForm.get('userName').invalid && registrationForm.get('userName').touched"
+        formControlName="userName"
+        type="text"
+        name=""
+        id="username"
+        class="form-control">
+      <small
+        [class.d-none]="registrationForm.get('userName').valid ||
+                         registrationForm.get('userName').untouched"
+        class="text-danger">Username is required.</small>
+    </div>
+```
+
+- to add more than 1 validator to a form control
+- update reactive.comp.ts username
+
+```
+  registrationForm = this.fb.group({
+    userName: ['Pep', [Validators.required, Validators.minLength(3)]],
+    password: [''],
+    confirmPassword: [''],
+    address: this.fb.group({
+      city: [''],
+      state: [''],
+      postalCode: ['']
+    })
+  });
+```
+
+- update reactive.comp.html
+
+```
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        [class.is-invalid]="registrationForm.get('userName').invalid && registrationForm.get('userName').touched"
+        formControlName="userName"
+        type="text"
+        name=""
+        id="username"
+        class="form-control">
+      <div *ngIf="registrationForm.get('userName').invalid &&
+                   registrationForm.get('userName').touched">
+          <small
+            *ngIf="registrationForm.get('userName').errors?.required"
+            class="text-danger">Username is required</small>
+          <small
+            *ngIf="registrationForm.get('userName').errors?.minlength"
+            class="text-danger">Username must be at least 3 characters</small>
+      </div>
+    </div>
+```
+
+- currently 'registrationForm.get...' is being used a lot, we can create a getter to make the code simpler
+- in reactive.comp.ts add the username getter
+
+```
+export class ReactiveComponent implements OnInit {
+
+  get userName() {
+    return this.registrationForm.get('userName');
+  }
+
+  constructor(
+    private fb: FormBuilder
+    ) { }
+```
+
+- and update reactive.comp.html
+
+```
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        [class.is-invalid]="userName.invalid &&
+                            userName.touched"
+        formControlName="userName"
+        type="text"
+        name=""
+        id="username"
+        class="form-control">
+      <div *ngIf="userName.invalid &&
+                   userName.touched">
+          <small
+            *ngIf="userName.errors?.required"
+            class="text-danger">Username is required</small>
+          <small
+            *ngIf="userName.errors?.minlength"
+            class="text-danger">Username must be at least 3 characters</small>
+      </div>
+    </div>
+```
+
+### CUSTOM VALIDATORS
+
+- example if username = admin
+- create the file: shared/user-name.validator.ts
+
+```
+import { AbstractControl } from '@angular/forms';
+
+// if it fails, it returns an object of type string and the value is of type any,
+// if validation passes, it returns null
+export function forbiddenNameValidator(control: AbstractControl): {[key: string]: any} | null {
+  // this tests to see if the value passed in == admin
+  const forbidden = /admin/.test(control.value);
+  // if it fails, it sends back the value that was passed in, if not then null
+  return forbidden ? { forbiddenName: {value: control.value}} : null;
+}
+
+```
+
+- update username in reactive.comp.ts to use the forbidden validator
+
+```
+import { forbiddenNameValidator } from 'src/app/shared/user-name.validator';
+  registrationForm = this.fb.group({
+    userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator]],
+    password: [''],
+    confirmPassword: [''],
+    address: this.fb.group({
+      city: [''],
+      state: [''],
+      postalCode: ['']
+    })
+  });
+```
+
+- update the reactive.comp.html
+
+```
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        [class.is-invalid]="userName.invalid &&
+                            userName.touched"
+        formControlName="userName"
+        type="text"
+        name=""
+        id="username"
+        class="form-control">
+      <div *ngIf="userName.invalid &&
+                   userName.touched">
+          <small
+            *ngIf="userName.errors?.required"
+            class="text-danger">Username is required</small>
+          <small
+            *ngIf="userName.errors?.minlength"
+            class="text-danger">Username must be at least 3 characters</small>
+            <small
+            *ngIf="userName.errors?.forbiddenName"
+            class="text-danger">{{userName.errors?.forbiddenName.value}} Username not allowed</small>
+      </div>
+    </div>
+```
+
+- refresh and test out 'admin' should say not allowed
+- to allow the forbidden function to test other words, update: user-name.validator.ts
+
+```
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+
+// if it fails, it returns an object of type string and the value is of type any,
+// if validation passes, it returns null
+// export function forbiddenNameValidator(control: AbstractControl): {[key: string]: any} | null {
+//   // this tests to see if the value passed in == admin
+//   const forbidden = /admin/.test(control.value);
+//   // if it fails, it sends back the value that was passed in, if not then null
+//   return forbidden ? { forbiddenName: {value: control.value}} : null;
+// }
+
+
+// this is so we can make a generic test, not only for admin, but maybe password
+export function forbiddenNameValidator(forbiddenName: RegExp): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    const forbidden = forbiddenName.test(control.value);
+    return forbidden ? { forbiddenName: {value: control.value}} : null;
+}
+```
+
+- update reactive.comp.ts to accept a parameter
+
+```
+  registrationForm = this.fb.group({
+    userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator(/admin/)]],
+    password: [''],
+    confirmPassword: [''],
+    address: this.fb.group({
+      city: [''],
+      state: [''],
+      postalCode: ['']
+    })
+  });
+```
+
+- reactive.comp.html stays the same
+
+### CROSS FIELD VALIDATION
+
+- checking password and confirmPassword fields
+- create the file: shared/password.validator.ts
+
+```
+import { AbstractControl } from '@angular/forms';
+
+//  here the 'control' = registrationForm group, not the individual password or confirm password fields, its the whole group
+export function PasswordValidator(control: AbstractControl): { [key: string]: boolean } | null {
+  const password = control.get('password');
+  const confirmPassword = control.get('confirmPassword');
+  // this checks to see if the user has typed in the fields, because without it
+  // as soon as the user starts typing the password, the confirm already displays an error
+  if (password.pristine || confirmPassword.pristine) {
+    return null;
+  }
+  // tests to see that both password and confirmpassword are there, and if the values match
+  // if it doesnt then misMatch is true, if it does then null
+  return password && confirmPassword && password.value !== confirmPassword.value ?
+    { misMatch: true } :
+    null;
+}
+
+```
+
+- update reactive.comp.ts
+
+```
+import { PasswordValidator } from 'src/app/shared/password.validator';
+  registrationForm = this.fb.group({
+    userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator(/admin/)]],
+    password: [''],
+    confirmPassword: [''],
+    address: this.fb.group({
+      city: [''],
+      state: [''],
+      postalCode: ['']
+    })
+  }, { validator: PasswordValidator });
+
+```
+
+- update reactive.comp.html
+
+```
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        [class.is-invalid]="registrationForm.errors?.misMatch"
+        formControlName="confirmPassword"
+        type="password"
+        id="confirmPassword"
+        name=""
+        class="form-control">
+        <small
+          *ngIf="registrationForm.errors?.misMatch"
+          class="text-danger">
+          Passwords no not match
+        </small>
+    </div>
+```
+
+### CONDITIONAL VALIDATION
+
+- checkbox if user wants promotional info, email field is required, if not then it is not required
+- update the form on reactive.comp.html, below username field
+
+```
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        formControlName="email"
+        type="email"
+        class="form-control"
+        id="email">
+    </div>
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" formControlName="subscribe" id="subscribe">
+      <label for="subscribe" class="form-check-label">
+        Send me promotional offers
+      </label>
+    </div>
+```
+
+- update the form group in reactive.comp.ts with the 2 new fields
+
+```
+  registrationForm = this.fb.group({
+    userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator(/admin/)]],
+    email: [''],
+    subscribe: [false],
+    password: [''],
+    confirmPassword: [''],
+    address: this.fb.group({
+      city: [''],
+      state: [''],
+      postalCode: ['']
+    })
+  }, { validator: PasswordValidator });
+```
+
+- move the form group in the ngOnInt block, create a registrationForm of FormGroup, and add this. to the form group
+- then get the value changes of the checkbox, if checked then set validators on the email field, if not clear validators
+- then finally update value and validity method of email field
+
+```
+  ngOnInit() {
+    this.registrationForm = this.fb.group({
+      userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator(/admin/)]],
+      email: [''],
+      subscribe: [false],
+      password: [''],
+      confirmPassword: [''],
+      address: this.fb.group({
+        city: [''],
+        state: [''],
+        postalCode: ['']
+      })
+    }, { validator: PasswordValidator });
+
+    this.registrationForm.get('subscribe').valueChanges
+      .subscribe(checkedValue => {
+        const email = this.registrationForm.get('email');
+        if (checkedValue) {
+          email.setValidators(Validators.required);
+        } else {
+          email.clearValidators();
+        }
+        email.updateValueAndValidity();
+      });
+  }
+```
+
+- and add the email getter, final code should be
+
+```
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { forbiddenNameValidator } from 'src/app/shared/user-name.validator';
+import { PasswordValidator } from 'src/app/shared/password.validator';
+
+@Component({
+  selector: 'app-reactive',
+  templateUrl: './reactive.component.html',
+  styleUrls: ['./reactive.component.scss']
+})
+export class ReactiveComponent implements OnInit {
+  registrationForm: FormGroup;
+
+  get userName() {
+    return this.registrationForm.get('userName');
+  }
+
+  get email() {
+    return this.registrationForm.get('email');
+  }
+
+  constructor(
+    private fb: FormBuilder
+    ) { }
+
+  ngOnInit() {
+    this.registrationForm = this.fb.group({
+      userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator(/admin/)]],
+      email: [''],
+      subscribe: [false],
+      password: [''],
+      confirmPassword: [''],
+      address: this.fb.group({
+        city: [''],
+        state: [''],
+        postalCode: ['']
+      })
+    }, { validator: PasswordValidator });
+
+    this.registrationForm.get('subscribe').valueChanges
+      .subscribe(checkedValue => {
+        const email = this.registrationForm.get('email');
+        if (checkedValue) {
+          email.setValidators(Validators.required);
+        } else {
+          email.clearValidators();
+        }
+        email.updateValueAndValidity();
+      });
+  }
+
+  // registrationForm = new FormGroup({
+  //   userName: new FormControl('Pep'),
+  //   password: new FormControl(''),
+  //   confirmPassword: new FormControl(''),
+  //   address: new FormGroup({
+  //     city: new FormControl(''),
+  //     state: new FormControl(''),
+  //     postalCode: new FormControl('')
+  //   })
+  // });
+
+  // loadApiData() {
+  //   this.registrationForm.setValue({
+  //     userName: 'Bruce',
+  //     password: 'asdf',
+  //     confirmPassword: 'asdf',
+  //     address: {
+  //       city: 'Miami',
+  //       state: 'FL',
+  //       postalCode: '33123'
+  //     }
+  //   });
+  // }
+
+  loadApiData() {
+    this.registrationForm.patchValue({
+      userName: 'Bruce',
+      password: 'asdf',
+      confirmPassword: 'asdf'
+    });
+  }
+
+}
+
+```
+
+- update reactive.comp.html
+
+```
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        [class.is-invalid]="email.invalid && email.touched"
+        formControlName="email"
+        type="email"
+        class="form-control"
+        id="email">
+        <small
+          [class.d-none]="email.valid || email.untouched"
+          class="text-danger">
+          Email is required
+        </small>
+    </div>
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" formControlName="subscribe" id="subscribe">
+      <label for="subscribe" class="form-check-label">
+        Send me promotional offers
+      </label>
+    </div>
+```
+
+### DYNAMIC FORM CONTROLS
+
+- the duplicating steps are (we can duplicate an entire form group, like address)
+
+```
+1) import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms'; - import formarray
+2) define the form array in the form group: alternateEmails: this.fb.array([])
+3) create a getter:   get alternateEmails() {
+    return this.registrationForm.get('alternateEmails') as FormArray;
+  }
+4) create the method to push either a form control or a form group:   addAlternateEmail() {
+    this.alternateEmails.push(this.fb.control(''));
+  }  
+5) in the html, add the form array name directive:         <div
+          formArrayName="alternateEmails"
+6) add the ngFor to iterate  the structure directive: *ngFor="let email of alternateEmails.controls; let i = index">
+
+The steps are shown below       
+```
+
+- adding multiple fields based on a button click
+- in reactive.comp.ts add a getter for alternate emails, and an alternateEmails method to push the emails to the form control
+
+```
+  get alternateEmails() {
+    return this.registrationForm.get('alternateEmails') as FormArray;
+  }
+
+  addAlternateEmail() {
+    this.alternateEmails.push(this.fb.control(''));
+  }  
+```
+
+- update the form group with a form array for alternate emails
+
+```
+  ngOnInit() {
+    this.registrationForm = this.fb.group({
+      userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator(/admin/)]],
+      email: [''],
+      subscribe: [false],
+      password: [''],
+      confirmPassword: [''],
+      address: this.fb.group({
+        city: [''],
+        state: [''],
+        postalCode: ['']
+      }),
+      alternateEmails: this.fb.array([])
+    }, { validator: PasswordValidator });
+
+    this.registrationForm.get('subscribe').valueChanges
+      .subscribe(checkedValue => {
+        const email = this.registrationForm.get('email');
+        if (checkedValue) {
+          email.setValidators(Validators.required);
+        } else {
+          email.clearValidators();
+        }
+        email.updateValueAndValidity();
+      });
+  }
+```
+
+- add the button to the html and a div for the input with an ngFor
+
+```
+    <div class="form-group">
+      <label for="email">Email</label>
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm m-2"
+        (click)="addAlternateEmail()"
+        >Add e-mail</button>
+      <input
+        [class.is-invalid]="email.invalid && email.touched"
+        formControlName="email"
+        type="email"
+        class="form-control"
+        id="email">
+        <small
+          [class.d-none]="email.valid || email.untouched"
+          class="text-danger">
+          Email is required
+        </small>
+        <div
+          formArrayName="alternateEmails"
+          *ngFor="let email of alternateEmails.controls; let i = index">
+          <input
+            type="email"
+            class="form-control my-1"
+            [formControlName]="i">
+        </div>
+    </div>
+```
+
+- the final code for reactive.comp.ts for dynamic forms
+
+```
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { forbiddenNameValidator } from 'src/app/shared/user-name.validator';
+import { PasswordValidator } from 'src/app/shared/password.validator';
+
+@Component({
+  selector: 'app-reactive',
+  templateUrl: './reactive.component.html',
+  styleUrls: ['./reactive.component.scss']
+})
+export class ReactiveComponent implements OnInit {
+  registrationForm: FormGroup;
+
+  get userName() {
+    return this.registrationForm.get('userName');
+  }
+
+  get email() {
+    return this.registrationForm.get('email');
+  }
+
+  get alternateEmails() {
+    return this.registrationForm.get('alternateEmails') as FormArray;
+  }
+
+  addAlternateEmail() {
+    this.alternateEmails.push(this.fb.control(''));
+  }
+
+  constructor(
+    private fb: FormBuilder
+    ) { }
+
+  ngOnInit() {
+    this.registrationForm = this.fb.group({
+      userName: ['Pep', [Validators.required, Validators.minLength(3), forbiddenNameValidator(/admin/)]],
+      email: [''],
+      subscribe: [false],
+      password: [''],
+      confirmPassword: [''],
+      address: this.fb.group({
+        city: [''],
+        state: [''],
+        postalCode: ['']
+      }),
+      alternateEmails: this.fb.array([])
+    }, { validator: PasswordValidator });
+
+    this.registrationForm.get('subscribe').valueChanges
+      .subscribe(checkedValue => {
+        const email = this.registrationForm.get('email');
+        if (checkedValue) {
+          email.setValidators(Validators.required);
+        } else {
+          email.clearValidators();
+        }
+        email.updateValueAndValidity();
+      });
+  }
+
+  // registrationForm = new FormGroup({
+  //   userName: new FormControl('Pep'),
+  //   password: new FormControl(''),
+  //   confirmPassword: new FormControl(''),
+  //   address: new FormGroup({
+  //     city: new FormControl(''),
+  //     state: new FormControl(''),
+  //     postalCode: new FormControl('')
+  //   })
+  // });
+
+  // loadApiData() {
+  //   this.registrationForm.setValue({
+  //     userName: 'Bruce',
+  //     password: 'asdf',
+  //     confirmPassword: 'asdf',
+  //     address: {
+  //       city: 'Miami',
+  //       state: 'FL',
+  //       postalCode: '33123'
+  //     }
+  //   });
+  // }
+
+  loadApiData() {
+    this.registrationForm.patchValue({
+      userName: 'Bruce',
+      password: 'asdf',
+      confirmPassword: 'asdf'
+    });
+  }
+
+}
+
+```
+
+- refresh and add different email
+
+### SUBMITTING THE FORM DATA
+
+- update the form tag in the reactive.comp.html with an onsubmit method
+
+```
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+```
+
+- in reactive.comp.ts create the onsubmit method
+
+```
+  onSubmit() {
+    console.log(this.registrationForm.value);
+  }
+```
+
+- in terminal: ng g s registration
+- update the service
+
+```
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RegistrationService {
+
+  API_URL = 'http://localhost:3000/registration';
+
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  register(userData) {
+    console.log('This is in register service ' + userData);
+    return this.http.post<any>(this.API_URL, userData, this.httpOptions)
+      .pipe(catchError(this.errorHandler));
+  }
+
+  errorHandler(error: HttpErrorResponse) {
+    return throwError(error);
+  }
+}
+
+```
+
+- in reactive.comp.ts update the on submit method
+
+```
+  constructor(
+    private fb: FormBuilder,
+    private registrationService: RegistrationService
+    ) { }
+  onSubmit() {
+    // console.log(this.registrationForm.value);
+    this.registrationService.register(this.registrationForm.value)
+      .subscribe(
+        response => console.log('Success', response),
+        error => console.log('Error', error)
+      );
+  }    
+```
+
+- update the button in the reactive.comp.html
+
+```
+    <button 
+      [disabled]="!registrationForm.valid"
+      class="btn btn-primary" 
+      type="submit">Register</button>
+```
+
+- update backend/routes/index.js
+
+```
+router.post('/registration', function(req, res, next) {
+  console.log(req.body);
+  // res.status(401);
+  res.send({'Status':'User Created'});
+});
+```
+
+- refresh and create a new registration, it should all work
+
+#### FINISH CODE EVOLUTION REACTIVE FORMS

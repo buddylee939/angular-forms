@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -11,6 +11,7 @@ import { CarsListComponent } from './cars/cars-list/cars-list.component';
 import { CarNewComponent } from './cars/car-new/car-new.component';
 import { HeroesComponent } from './heroes/heroes.component';
 import { HeroFormComponent } from './heroes/hero-form/hero-form.component';
+import { ReactiveComponent } from './components/reactive/reactive.component';
 
 @NgModule({
   declarations: [
@@ -20,12 +21,14 @@ import { HeroFormComponent } from './heroes/hero-form/hero-form.component';
     CarsListComponent,
     CarNewComponent,
     HeroesComponent,
-    HeroFormComponent
+    HeroFormComponent,
+    ReactiveComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   providers: [],

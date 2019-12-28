@@ -1,3 +1,4 @@
+import { ReactiveComponent } from './components/reactive/reactive.component';
 import { CarNewComponent } from './cars/car-new/car-new.component';
 import { TdfComponent } from './components/tdf/tdf.component';
 import { NgModule } from '@angular/core';
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'cars', component: CarsListComponent },
   { path: 'car/new', component: CarNewComponent },
   { path: 'tdf', component: TdfComponent },
+  { path: 'reactive', component: ReactiveComponent },
   { path: 'hero', component: HeroFormComponent },
 ];
 @NgModule({
