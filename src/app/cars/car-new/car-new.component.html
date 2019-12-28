@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    {{ carForm.value | json }} <br>
+    {{ userCar | json }}
+  </div>
+  <div class="row">
+    <form #carForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="">Car Name</label>
+        <input type="text" class="form-control" [(ngModel)]="userCar.carName" name="carName">
+      </div>
+      <div class="form-group">
+        <label for="">Engine</label>
+        <input type="text" class="form-control" [(ngModel)]="userCar.engine" name="engine">
+      </div>
+      <button type="submit" class="btn btn-success">Create Car</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<a routerLink="/car/new" class="btn btn-primary">New Car</a>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Engine</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let car of cars; let i = index">
+      <th scope="row">{{i + 1}}</th>
+      <td>{{car.carName}}</td>
+      <td>{{car.engine}}</td>
+      <td>@mdo</td>
+    </tr>
+
+  </tbody>
+</table>
+<!-- <h2>{{hondaAccord.engine}}</h2> -->
