@@ -1,6 +1,11 @@
-# ORDER OF TASKS TO DO WHEN CREATING A NEW TEMPLATE FORM
+# ANGULAR FORMS - TEMPLATE AND REACTIVE
+
+## LINKS 
 
 - [Reactive Forms from Angular.io](#reactiveAngular)
+
+# ORDER OF TASKS TO DO WHEN CREATING A NEW TEMPLATE FORM
+
 
 - You'll build this form in small steps:
 
