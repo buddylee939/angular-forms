@@ -10,6 +10,8 @@ import { Component, OnInit } from '@angular/core';
 export class TdfComponent implements OnInit {
   topics = ['Angular', 'React', 'Vue'];
   topicHasError = true;
+  submitted = false;
+  errorMsg = '';
 
   userModel = new User(
     'Rob',
@@ -37,10 +39,11 @@ export class TdfComponent implements OnInit {
 
   onSubmit() {
     // console.log(this.userModel);
+    this.submitted = true;
     this.enrollService.enroll(this.userModel)
       .subscribe(
         data => console.log('Success', data),
-        error => console.error('Error', error)
+        error => this.errorMsg = error.statusText
       );
   }
 

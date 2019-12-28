@@ -1,12 +1,18 @@
 <div class="container-fluid mb-5">
   <h1>Bootcamp Enrollment Form</h1>
-  <form #userForm="ngForm" novalidate (ngSubmit)="onSubmit()">
+  <div class="alert alert-danger" *ngIf="errorMsg">
+    {{ errorMsg }}
+  </div>
+  <div class="alert alert-success" *ngIf="submitted">
+    <p>User Created. Thanks!!!</p>
+  </div>
+  <form #userForm="ngForm" *ngIf="!submitted" novalidate (ngSubmit)="onSubmit()">
 
     {{ userForm.value | json }}
     <hr>
     {{ userModel | json }}
     <hr>
-    <p>The form is valid: {{ userForm.form.valid }}</p>
+    <p>The form is valid: {{ userForm.form.invalid || topicHasError }}</p>
     <hr>
     <div ngModelGroup="address">
       <div class="form-group">
