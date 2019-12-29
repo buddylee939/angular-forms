@@ -3,8 +3,11 @@
 ## LINKS 
 
 1. [Template Forms from Angular.io](#templateAngular)
-2. [Reactive Forms from Angular.io](#reactiveAngular)
-3. [Existing Validators for forms, from angular.io](#existingValidators)
+1. [Template Forms - YOUTUBE - CODEVOLUTION](#templateCodevolution)
+1. [Template Forms - Angular course - Max S.](#templateMaxS)
+1. [Reactive Forms - YOUTUBE - CODEVOLUTION](#reactiveCodevolution)
+1. [Reactive Forms from Angular.io](#reactiveAngular)
+1. [Existing Validators for forms, from angular.io](#existingValidators)
 
 # ORDER OF TASKS TO DO WHEN CREATING A NEW TEMPLATE FORM
 
@@ -246,8 +249,8 @@ newHero() {
 ```
 
 ## END OF ANGULAR SITE - TEMPLATE FORMS
-
-# ANGULAR FORMS TUTORIALS - YOUTUBE
+ 
+# <a name="templateCodevolution"></a> Template Forms - YOUTUBE - CODEVOLUTION
 
 ## TEMPLATE DRIVEN FORMS - TDF
 
@@ -1092,11 +1095,17 @@ router.post('/enroll', function(req, res, next) {
 module
 ```
 
+### THE END TEMPLATE FORM - YOUTUBE CODEVOLUTION
+
+# <a name="templateMaxS"></a> Template Forms - Angular course - Max S.
+
 <hr>
 
 # REACTIVE FORMS
 
-## FROM YOUTUBE ANGULAR FORMS - CODEVOLUTION
+<hr>  
+
+# <a name="reactiveCodevolution"></a> Reactive Forms - YOUTUBE - CODEVOLUTION
 
 - notes on reactive forms
 
