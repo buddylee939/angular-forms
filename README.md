@@ -2,9 +2,9 @@
 
 ## LINKS 
 
-- [Template Forms from Angular.io](#templateAngular)
-- [Reactive Forms from Angular.io](#reactiveAngular)
-- [Existing Validators for forms, from angular.io](#existingValidators)
+1. [Template Forms from Angular.io](#templateAngular)
+2. [Reactive Forms from Angular.io](#reactiveAngular)
+3. [Existing Validators for forms, from angular.io](#existingValidators)
 
 # ORDER OF TASKS TO DO WHEN CREATING A NEW TEMPLATE FORM
 
