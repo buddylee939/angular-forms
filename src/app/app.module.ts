@@ -12,6 +12,7 @@ import { CarNewComponent } from './cars/car-new/car-new.component';
 import { HeroesComponent } from './heroes/heroes.component';
 import { HeroFormComponent } from './heroes/hero-form/hero-form.component';
 import { ReactiveComponent } from './components/reactive/reactive.component';
+import { NameEditorComponent } from './name-editor/name-editor.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ReactiveComponent } from './components/reactive/reactive.component';
     CarNewComponent,
     HeroesComponent,
     HeroFormComponent,
-    ReactiveComponent
+    ReactiveComponent,
+    NameEditorComponent
   ],
   imports: [
     BrowserModule,

@@ -5,10 +5,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CarsListComponent } from './cars/cars-list/cars-list.component';
 import { HeroFormComponent } from './heroes/hero-form/hero-form.component';
+import { NameEditorComponent } from './name-editor/name-editor.component';
 
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'cars' },
+  { path: 'name', component: NameEditorComponent },
+  { path: 'cars', component: CarsListComponent },
   { path: 'cars', component: CarsListComponent },
   { path: 'car/new', component: CarNewComponent },
   { path: 'tdf', component: TdfComponent },

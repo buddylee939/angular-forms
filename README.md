@@ -4,6 +4,7 @@
 
 - [Template Forms from Angular.io](#templateAngular)
 - [Reactive Forms from Angular.io](#reactiveAngular)
+- [Existing Validators for forms, from angular.io](#existingValidators)
 
 # ORDER OF TASKS TO DO WHEN CREATING A NEW TEMPLATE FORM
 
@@ -2267,4 +2268,476 @@ router.post('/registration', function(req, res, next) {
 #### FINISH CODE EVOLUTION REACTIVE FORMS
 
 # <a name="reactiveAngular"></a> REACTIVE FORMS FROM ANGULAR.IO
+
+- update app.module.ts, add reactiveforms
+
+```
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
+  ],
+```
+
+- ng generate component NameEditor
+- create a form control in name-editor.comp.ts
+
+```
+export class NameEditorComponent implements OnInit {
+  name = new FormControl('');
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}
+```
+
+- update the name.comp.html
+
+```
+<div class="container">
+  <div>
+    {{name.value | json}}
+  </div>
+  <label>
+    Name:
+    <input type="text" [formControl]="name">
+  </label>
+</div>
+
+```
+
+- add a method in name=editor.comp.ts
+
+```
+updateName() {
+  this.name.setValue('Nancy');
+}
+```
+
+- update the name-editor.comp.html with a button to simulate an api call
+
+```
+<p>
+  <button (click)="updateName()">Update Name</button>
+</p>
+```
+
+- final html
+
+```
+<div class="container">
+  <div>
+    {{name.value | json}}
+  </div>
+  <label>
+    Name:
+    <input type="text" [formControl]="name">
+  </label>
+  <p>
+    Value: {{ name.value }}
+  </p>
+  <p>
+    <button (click)="updateName()">Update Name</button>
+  </p>
+</div>
+```
+
+- CREATING A FORM GROUP
+- update name-edito.comp.ts
+
+```
+export class NameEditorComponent implements OnInit {
+  name = new FormControl('');
+
+  profileForm = new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+  });
+```
+
+- update the html
+
+```
+  <h2>Profile Form</h2>
+  {{ profileForm.value | json}}
+  <div>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+      <label>
+        First Name:
+        <input type="text" formControlName="firstName">
+      </label>
+      <br>
+      <label>
+        Last Name:
+        <input type="text" formControlName="lastName">
+      </label>
+
+    </form>
+  </div>
+```
+
+- create the onSubmit method in the comp.ts
+
+```
+onSubmit() {
+  // TODO: Use EventEmitter with form value
+  console.warn(this.profileForm.value);
+}
+```
+
+### Creating nested form groups
+
+- update name.comp.ts
+
+```
+  profileForm = new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    address: new FormGroup({
+      street: new FormControl(''),
+      city: new FormControl(''),
+      state: new FormControl(''),
+      zip: new FormControl('')
+    })
+  });
+```
+
+- update the html
+
+```
+<div class="container">
+  <div>
+    {{name.value | json}}
+  </div>
+  <label>
+    Name:
+    <input type="text" [formControl]="name">
+  </label>
+  <p>
+    Value: {{ name.value }}
+  </p>
+  <p>
+    <button (click)="updateName()">Update Name</button>
+  </p>
+  <h2>Profile Form</h2>
+  {{ profileForm.value | json}}
+  <div>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+      <label>
+        First Name:
+        <input type="text" formControlName="firstName">
+      </label>
+      <br>
+      <label>
+        Last Name:
+        <input type="text" formControlName="lastName">
+      </label>
+      <br>
+      <div formGroupName="address">
+        <h3>Address</h3>
+
+        <label>
+          Street:
+          <input type="text" formControlName="street">
+        </label>
+
+        <label>
+          City:
+          <input type="text" formControlName="city">
+        </label>
+
+        <label>
+          State:
+          <input type="text" formControlName="state">
+        </label>
+
+        <label>
+          Zip Code:
+          <input type="text" formControlName="zip">
+        </label>
+      </div>
+      <button type="submit" [disabled]="!profileForm.valid">Submit</button>
+    </form>
+  </div>
+</div><!--  container -->
+
+```
+
+- USING SETVALUE AND PATCHVALUE
+- add the update profile name-editor.comp.ts
+
+```
+  updateProfile() {
+    this.profileForm.patchValue({
+      firstName: 'Nancy',
+      address: {
+        street: '123 Drew Street'
+      }
+    });
+  }
+```
+
+- update the html
+
+```
+      <button type="submit" [disabled]="!profileForm.valid">Submit</button>
+      <p>
+        <button (click)="updateProfile()">Update Profile</button>
+      </p>
+```
+
+## Generating form controls with FormBuilder
+
+```
+The FormBuilder service has three methods: control(), group(), and array(). These are factory methods for generating instances in your component classes including form controls, form groups, and form arrays.
+```
+
+- add to name-editor.comp.ts the form builder to the constructor
+
+```
+constructor(private fb: FormBuilder) { }
+```
+
+- add a registration form to the html
+
+```
+<div class="container">
+  <h2>Registration Form</h2>
+  {{ registrationForm.value | json}}
+  <div>
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmitRegistration()">
+
+      <label>
+        First Name:
+        <input type="text" formControlName="firstName">
+      </label>
+      <br>
+      <label>
+        Last Name:
+        <input type="text" formControlName="lastName">
+      </label>
+      <br>
+      <div formGroupName="address">
+        <h3>Address</h3>
+
+        <label>
+          Street:
+          <input type="text" formControlName="street">
+        </label>
+
+        <label>
+          City:
+          <input type="text" formControlName="city">
+        </label>
+
+        <label>
+          State:
+          <input type="text" formControlName="state">
+        </label>
+
+        <label>
+          Zip Code:
+          <input type="text" formControlName="zip">
+        </label>
+      </div>
+      <button type="submit" [disabled]="!registrationForm.valid">Submit</button>
+    </form>
+  </div>
+</div><!--  container -->
+
+```
+
+- update the comp.ts with the form builder
+
+```
+  // using form builders, form group, nested form group
+  registrationForm = this.fb.group({
+    firstName: [''],
+    lastName: [''],
+    address: this.fb.group({
+      street: [''],
+      city: [''],
+      state: [''],
+      zip: ['']
+    }),
+  });
+  constructor(private fb: FormBuilder) { }
+  onSubmitRegistration() {
+    // TODO: Use EventEmitter with form value
+    console.log(this.registrationForm.value);
+  }
+```
+
+## Simple form validation
+
+- update the registration form in the comp.ts
+
+```
+registrationForm = this.fb.group({
+  firstName: ['', Validators.required],
+  lastName: [''],
+  address: this.fb.group({
+    street: [''],
+    city: [''],
+    state: [''],
+    zip: ['']
+  }),
+});
+```
+
+- update the name in the registration form in the html
+
+```
+<input type="text" formControlName="firstName" required>
+```
+
+- show the form status on the form to see
+
+```
+<p>
+  Form Status: {{ registrationForm.status }}
+</p>
+```
+
+## Dynamic controls using form arrays
+
+- update the registration form to include an 'aliases' array, update the comp.ts file
+
+```
+  registrationForm = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: [''],
+    address: this.fb.group({
+      street: [''],
+      city: [''],
+      state: [''],
+      zip: ['']
+    }),
+    aliases: this.fb.array([
+      this.fb.control('')
+    ])
+  });
+```
+
+- add a getter for the form array for the registration form in the comp.ts file
+
+```
+  get aliases() {
+    return this.registrationForm.get('aliases') as FormArray;
+  }
+```
+
+- create a method to add the array to the registration form
+
+```
+addAlias() {
+  this.aliases.push(this.fb.control(''));
+}
+```
+
+- add the form array aliases to the .comp.html file
+
+```
+<div formArrayName="aliases">
+  <h3>Aliases</h3> <button (click)="addAlias()">Add Alias</button>
+
+  <div *ngFor="let address of aliases.controls; let i=index">
+    <!-- The repeated alias template -->
+    <label>
+      Alias:
+      <input type="text" [formControlName]="i">
+    </label>
+  </div>
+</div>
+```
+
+### FINISHED ABNUGLAR REACTIVE FORMS
+
+# <a name="existingValidators"></a> VALIDATORS THAT EXIST
+## [from this website](https://angular.io/api/forms/Validators#email)
+```
+class Validators {
+  static min(min: number): ValidatorFn
+  static max(max: number): ValidatorFn
+  static required(control: AbstractControl): ValidationErrors | null
+  static requiredTrue(control: AbstractControl): ValidationErrors | null
+  static email(control: AbstractControl): ValidationErrors | null
+  static minLength(minLength: number): ValidatorFn
+  static maxLength(maxLength: number): ValidatorFn
+  static pattern(pattern: string | RegExp): ValidatorFn
+  static nullValidator(control: AbstractControl): ValidationErrors | null
+  static compose(validators: ValidatorFn[]): ValidatorFn | null
+  static composeAsync(validators: AsyncValidatorFn[]): AsyncValidatorFn | null
+}
+```
+
+### Adding custom validation to template driven forms
+
+- create a file shared/forbidden-name.directive.ts
+
+```
+import { AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { Input, Directive } from '@angular/core';
+import { forbiddenNameValidator } from './user-name.validator';
+
+@Directive({
+  selector: '[appForbiddenName]',
+  providers: [{provide: NG_VALIDATORS, useExisting: ForbiddenValidatorDirective, multi: true}]
+})
+
+export class ForbiddenValidatorDirective implements Validator {
+  @Input('appForbiddenName') forbiddenName: string;
+
+  validate(control: AbstractControl): {[key: string]: any} | null {
+    return this.forbiddenName ? forbiddenNameValidator(new RegExp(this.forbiddenName, 'i'))(control)
+                              : null;
+  }
+}
+```
+
+- create the file shared/forbidden-name.validator.ts 
+
+```
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+
+/** A hero's name can't match the given regular expression */
+export function forbiddenNameValidator(nameRe: RegExp): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    const forbidden = nameRe.test(control.value);
+    return forbidden ? {forbiddenName: {value: control.value}} : null;
+  };
+}
+```
+
+- add to comp.ts
+
+```
+firstName: ['', [Validators.required, forbiddenNameValidator(/bob/i)]],
+```
+- or add to template form
+
+```
+<input id="name" name="name" class="form-control"
+      required minlength="4" appForbiddenName="bob"
+      [(ngModel)]="hero.name" #name="ngModel" >
+```
+
+### CONTROL STATUS CSS CLASSES
+
+```
+.ng-valid
+.ng-invalid
+.ng-pending
+.ng-pristine
+.ng-dirty
+.ng-untouched
+.ng-touched
+```
 
