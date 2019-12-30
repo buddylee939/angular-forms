@@ -13,6 +13,8 @@ import { HeroesComponent } from './heroes/heroes.component';
 import { HeroFormComponent } from './heroes/hero-form/hero-form.component';
 import { ReactiveComponent } from './components/reactive/reactive.component';
 import { NameEditorComponent } from './name-editor/name-editor.component';
+import { MaxTemplateComponent } from './components/max-template/max-template.component';
+import { MaxReactiveComponent } from './components/max-reactive/max-reactive.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { NameEditorComponent } from './name-editor/name-editor.component';
     HeroesComponent,
     HeroFormComponent,
     ReactiveComponent,
-    NameEditorComponent
+    NameEditorComponent,
+    MaxTemplateComponent,
+    MaxReactiveComponent
   ],
   imports: [
     BrowserModule,

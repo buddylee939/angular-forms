@@ -5,6 +5,7 @@
 1. [Template Forms from Angular.io](#templateAngular)
 1. [Template Forms - YOUTUBE - CODEVOLUTION](#templateCodevolution)
 1. [Template Forms - Angular course - Max S.](#templateMaxS)
+1. [Reactive Forms - Angular course - Max S.](#reactiveMaxS)
 1. [Reactive Forms - YOUTUBE - CODEVOLUTION](#reactiveCodevolution)
 1. [Reactive Forms from Angular.io](#reactiveAngular)
 1. [Existing Validators for forms, from angular.io](#existingValidators)
@@ -1099,9 +1100,1008 @@ module
 
 # <a name="templateMaxS"></a> Template Forms - Angular course - Max S.
 
+- start with a basic form in max-template.comp.html
+- angular forms don't have an 'action' because in regular html, the 'action' sends the form to the server, but we are using angular to submit the form, and doing it the ngSubmit angular way, so i can pass through its state and validity checks
+
+```
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="form-control">
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input type="email" id="email" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select id="secret" class="form-control">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+```
+
+- make sure app.module.ts has the: formsmodule
+- right now angular doesn't know what inputs the form has or what to do with them, it knows there is a form, but not the fields
+- to let angular know we have to add ngModel to the fields and the name of the control
+- as such
+
+```
+<input
+  type="text"
+  id="username"
+  class="form-control"
+  ngModel
+  name="username">
+```              
+
+- update the form with ngModel and name for all the fields
+
+```
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <div id="user-data">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username">
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select
+            id="secret"
+            class="form-control"
+            ngModel
+            name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+```
+
+- now to make the form submittable, to see what the value of the fields are:
+- update the form tag on the .comp.html file
+
+```
+<form (ngSubmit)="onSubmit()">
+```
+
+- add the onSubmit to the comp.ts file
+
+```
+  onSubmit() {
+    console.log('Submitted');
+  }
+```
+
+- refresh and test the submit button, we should see 'submitted' in the console
+- now to see the 'form object' to see what is actually in the form, update the form tag with a 'local' variable reference
+
+```
+<form #f (ngSubmit)="onSubmit(f)">
+```
+
+- update the comp.ts onSubmit to receive the f element
+
+```
+  onSubmit(form: HTMLFontElement) {
+    console.log(form);
+  }
+```
+
+- but that passes the whole form object, we only need to see the value of the fields
+- so update the form tag on the .comp.html
+
+```
+<form #f="ngForm" (ngSubmit)="onSubmit(f)">
+```
+
+- update the onsubmit method on the comp.ts file
+
+```
+  onSubmit(form: NgForm) {
+    console.log(form);
+  }
+```
+
+- refresh and see everything that it sends, the ng Object with lots of properties
+- to see the values, update the onsubmit
+
+```
+  onSubmit(form: NgForm) {
+    console.log(form.value);
+  }
+```
+
+- refresh and now we should see the individual fields
+- USING VIEWCHILD TO PASS TEH DATA FROM THE FORM TO THE ON SUBMIT
+- update comp.html
+
+```
+<form #f="ngForm" (ngSubmit)="onSubmit()">
+```
+
+- update the comp.ts file
+
+```
+export class MaxTemplateComponent implements OnInit {
+  // this 'views the f form and passes it to the local variable signupform, of type ngform
+  // static - True to resolve query results before change detection runs
+  // When static is not provided, uses query results to determine the timing of query
+  // resolution. If any query results are inside a nested view (such as *ngIf),
+  // the query is resolved after change detection runs. Otherwise, it is resolved before
+  // change detection runs.
+  @ViewChild('f', {static: false}) signupForm: NgForm;
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+  onSubmit() {
+    console.log(this.signupForm.value);
+  }
+}
+```
+
+### ADDING VALIDATION to TEMPLATE FORMS
+
+```
+Which Validators do ship with Angular? 
+
+Check out the Validators class: [https://angular.io/api/forms/Validators](https://angular.io/api/forms/Validators) - these are all built-in validators, though that are the methods which actually get executed (and which you later can add when using the reactive approach).
+
+For the template-driven approach, you need the directives. You can find out their names, by searching for "validator" in the official docs: [https://angular.io/api?type=directive](https://angular.io/api?type=directive) - everything marked with "D" is a directive and can be added to your template.
+
+Additionally, you might also want to enable HTML5 validation (by default, Angular disables it). You can do so by adding the ngNativeValidate  to a control in your template.
+```
+
+- from the angular site
+
+```
+class Validators {
+  static min(min: number): ValidatorFn
+  static max(max: number): ValidatorFn
+  static required(control: AbstractControl): ValidationErrors | null
+  static requiredTrue(control: AbstractControl): ValidationErrors | null
+  static email(control: AbstractControl): ValidationErrors | null
+  static minLength(minLength: number): ValidatorFn
+  static maxLength(maxLength: number): ValidatorFn
+  static pattern(pattern: string | RegExp): ValidatorFn
+  static nullValidator(control: AbstractControl): ValidationErrors | null
+  static compose(validators: ValidatorFn[]): ValidatorFn | null
+  static composeAsync(validators: AsyncValidatorFn[]): AsyncValidatorFn | null
+}
+```
+
+- update the username and email with required and email validators in the comp.html
+
+```
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+              required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email>
+          </div>
+        </div>
+```
+
+- if you add f.status on the html we can see the status of the code as we fill in the fields
+
+```
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      {{ f.status }}
+```
+
+- USING THE FORM STATE
+- the state is based on the valid/invalid, touched/untouched, pristine/dirty of the fields
+- update the button to be disabled if not valid
+
+```
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!f.valid">Submit</button>
+```
+
+- to put the border around the field using css instead of the [class.is-invalid]
+- add to the .comp.scss file
+
+```
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+```
+
+- refresh and if you click on an input field and tab out of it, the border appears
+- ADDING THE VALIDATION ERROR TEXT
+- update the html input email field, with an #email local variable with ngModel
+- then in the span tag we can check if that #email field is valid or not
+
+```
+  <div class="form-group">
+    <label for="email">Mail</label>
+    <input
+      type="email"
+      id="email"
+      class="form-control"
+      ngModel
+      name="email"
+      required
+      email
+      #email="ngModel">
+      <span
+        *ngIf="!email.valid && email.touched"
+        class="text-danger">
+        Please enter a valid email
+      </span>
+  </div>
+```
+
+- SET DEFAULT VALUES with property binding
+- add to the comp.ts a variable assigned to pet
+
+```
+  defaultQuestion = 'pet';
+  constructor() { }
+```
+
+- update the select in the comp.html with ngmodel to receive that default value
+
+```
+<div class="form-group">
+  <label for="secret">Secret Questions</label>
+  <select
+    id="secret"
+    class="form-control"
+    [ngModel]="defaultQuestion"
+    name="secret">
+    <option value="pet">Your first Pet?</option>
+    <option value="teacher">Your first teacher?</option>
+  </select>
+</div>
+```
+
+- USING 2 WAY BINDING IN CASE WE WANT TO DISPLAY WHAT THE USER HAS ENTERED
+- add an answer variable in the comp.ts
+
+```
+  defaultQuestion = 'pet';
+  answer = '';
+  constructor() { }
+```
+
+- update the html with a textarea so the user can enter an answer, and display their answer as they are typing it
+
+```
+<div class="form-group">
+  <textarea
+    name="questionAnswer"
+    rows="3"
+    [(ngModel)]="answer"
+    class="form-control"></textarea>
+</div>
+<p>Your reply: {{ answer }}</p>
+```
+
+- THE 3 WAYS OF BINDING: 
+
+```
+1) no binding, just telling angular that the input is a form control
+2) 1 way binding, to pre-set values on the form
+3) 2 way binding, where we dispaly on the form what the user is entering
+```
+
+### GROUPING FORM CONTROLS
+
+- breaking up a form into groups: name, address, socials etc.
+- group the fields you want into their own div and add an ngModelGroup with a variable, and add #userData="ngModelGroup" so we can check the state and validity of the group as a whole
+
+```
+        <div
+          id="user-data"
+          ngModelGroup="userData"
+          #userData="ngModelGroup"
+          >
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+              required>
+          </div>
+          <button class="btn btn-default" type="button">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+              #email="ngModel">
+              <span
+                *ngIf="!email.valid && email.touched"
+                class="text-danger">
+                Please enter a valid email
+              </span>
+          </div>
+```
+
+- when you submit form, it will be grouped as such
+
+```
+secret: "pet", 
+questionAnswer: "Piper"
+userData: 
+  username: "buddylee939"
+  email: "buddylee939@hotmail.com"
+```
+
+### HANDLING RADIO BUTTONS
+
+- add to the comp.ts a genders array
+
+```
+  defaultQuestion = 'pet';
+  answer = '';
+  genders = ['male', 'female'];
+```
+
+- update the comp.html to display them, ngfor loops through the options we set in the comp.ts, name="radio buttons share the same name so we set it to gender", ngmodel links the name with the form, [value] dynamically adds the value with the current gender, then {{gender}} passes the variable to the label to display to the user
+
+```
+  <div
+    *ngFor="let gender of genders"
+    class="radio">
+    <label>
+      <input
+        type="radio"
+        name="gender"
+        ngModel
+        [value]="gender">
+        {{ gender }}
+    </label>
+  </div>
+```
+
+### SETTING AND PATCHING VALUES TO THE FORM TO REPLICATE AN API CALL
+
+- USING SET VALUE, overrides all controls, erases anything set before, needs all the fields
+- in the comp.ts, create the suggested name method
+
+```
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+    this.signupForm.setValue({
+      userData: {
+        username: suggestedName,
+        email: ''
+      },
+      secret: 'pet',
+      questionAnswer: '',
+      gender: 'male'
+    });
+  }
+```
+
+- add a button with click to target the suggest user name method
+
+```
+  <button
+    (click)="suggestUserName()"
+    class="btn btn-secondary"
+    type="button"
+    >Suggest an Username</button>
+```
+
+- USING PATCH VALUE, only overrides the values you want to override
+- update the comp.ts
+
+```
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+    // this.signupForm.setValue({
+    //   userData: {
+    //     username: suggestedName,
+    //     email: ''
+    //   },
+    //   secret: 'pet',
+    //   questionAnswer: '',
+    //   gender: 'male'
+    // });
+    this.signupForm.form.patchValue({
+      userData: {
+        username: suggestedName
+      }
+    });
+  }
+```
+
+- refresh and test it out
+
+### USING FORM DATA
+
+- displaying the user data on the form when submitted
+- add a div with the user data in the comp.html
+
+```
+<div class="row" *ngIf="!submitted">....
+  </div>
+  <hr>
+  <div class="row" *ngIf="submitted">
+    <div class="col-xs-12">
+      <h3>Your Data</h3>
+      <p>Username: {{ user.username }}</p>
+      <p>Mail: {{ user.email }}</p>
+      <p>Secret Question: Your first {{ user.secretQuestion }}</p>
+      <p>Answer: {{ user.answer }}</p>
+      <p>Gender: {{ user.gender }}</p>
+    </div>
+  </div>
+</div>
+```
+
+- update the comp.ts with a user object, the fields don't need to match the name from the name fields on the form since it is a new user object
+- update the onsubmit method to set these user object values based on the values passed from the form
+- and finally it resets the form
+
+```
+  user = {
+    username: '',
+    email: '',
+    secretQuestion: '',
+    answer: '',
+    gender: ''
+  };
+  submitted = false;
+
+    onSubmit() {
+    this.submitted = true;
+    this.user.username = this.signupForm.value.userData.username;
+    this.user.email = this.signupForm.value.userData.email;
+    this.user.secretQuestion = this.signupForm.value.secret;
+    this.user.answer = this.signupForm.value.questionAnswer;
+    this.user.gender = this.signupForm.value.gender;
+
+    this.signupForm.reset();
+  }
+```
+
+- update the on sub
+
+#### THE END ANGULAR COURSE TEMPLATE FORMS - MAX S.
+
 <hr>
 
 # REACTIVE FORMS
+
+<hr>  
+
+# <a name="reactiveMaxS"></a> Reactive Forms - Angular Course - Max S.
+
+- add to app.module.ts: reactiveformsmodule
+- using the max-reactive component
+- add the form to .comp.html
+
+```
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">email</label>
+          <input
+            type="text"
+            id="email"
+            class="form-control">
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+```
+
+- add the form group and form controls, based on the html form inputs to the comp.ts file
+
+```
+export class MaxReactiveComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm: FormGroup;
+  constructor() { }
+
+  ngOnInit() {
+    this.createForm();
+  }
+
+  createForm() {
+    this.signupForm = new FormGroup({
+      username: new FormControl(null),
+      email: new FormControl(null),
+      gender: new FormControl('male')
+    });
+  }
+
+}
+```
+
+- syncing the ts with the html
+- update comp.html giving the form a formgroup based on the name we chose in the .ts file,
+- add formcontrolname to each input field, based on the names we chose in the .ts file
+
+```
+<div class="container">
+  <div class="row">
+    <div>
+      {{ signupForm.value | json }} <br>
+      {{ signupForm.status }} <br>
+      {{ signupForm.get('email').status }}
+    </div>
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">email</label>
+          <input
+            type="text"
+            id="email"
+            formControlName="email"
+            class="form-control">
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender"> {{ gender }}
+          </label>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+```
+
+- refresh, now we see male as the default
+
+### SUBMITTING THE FORM
+
+- update the form tag with ngsubmit and an onsubmit method
+
+```
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+```
+
+- create the on submit method in the comp.ts file
+
+```
+  onSubmit() {
+    console.log(this.signupForm.value);
+  }
+```
+
+- ADDING VALIDATION
+- update the createForm method in the .comp.ts file
+
+```
+  createForm() {
+    this.signupForm = new FormGroup({
+      username: new FormControl(null, Validators.required),
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      gender: new FormControl('male')
+    });
+  }
+```
+
+- DISPLAYING THE ERROR MESSAGES
+- update the comp.html to add the error fields to the username and the overall signup form
+
+```
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      formControlName="username"
+      class="form-control">
+      <span
+        *ngIf="!signupForm.get('username').valid &&
+                signupForm.get('username').touched"
+        class="text-danger">
+        Please enter a valid username
+      </span>
+  </div>
+  ...
+  ...
+  <div
+    *ngIf="!signupForm.valid && signupForm.touched"
+    class="text-danger">
+    Please enter all the required fields.
+  </div>  
+```
+
+- update the comp.scss to add a border to the invalid fields
+
+```
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+```
+
+### GROUPING FORM CONTROLS
+
+- in the comp.ts file, update the create form method to put username and password in its own group
+
+```
+  createForm() {
+    this.signupForm = new FormGroup({
+      userData: new FormGroup({
+        username: new FormControl(null, Validators.required),
+        email: new FormControl(null, [Validators.required, Validators.email]),
+      }),
+      gender: new FormControl('male')
+    });
+  }
+
+```
+
+- update the comp.html, wrap the username and email with a div and give it the formGroupName of userdata, that we assigned in the comp.ts
+- update the validations to reflect the nested layer
+
+```
+    <div>
+      {{ signupForm.value | json }} <br>
+      {{ signupForm.status }} <br>
+      {{ signupForm.get('userData.email').status }}
+    </div>
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control">
+            <span
+            *ngIf="!signupForm.get('userData.username').valid &&
+            signupForm.get('userData.username').touched"
+            class="text-danger">
+            Please enter a valid username
+          </span>
+        </div>
+        <div class="form-group">
+          <label for="email">email</label>
+          <input
+          type="text"
+          id="email"
+          formControlName="email"
+          class="form-control">
+        </div>
+      </div>
+```
+
+### USING FORM ARRAYS FOR DYNAMIC FIELDS
+
+- create a hobbies getter as formarray
+- add the hobbies form array to the signup form, and create an onAddHobby method to push the array controls to the form array in the comp.ts
+
+
+```
+export class MaxReactiveComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm: FormGroup;
+
+  get hobbies() {
+    return this.signupForm.get('hobbies') as FormArray;
+  }
+
+  constructor() { }
+
+  ngOnInit() {
+    this.createForm();
+  }
+
+  createForm() {
+    this.signupForm = new FormGroup({
+      userData: new FormGroup({
+        username: new FormControl(null, Validators.required),
+        email: new FormControl(null, [Validators.required, Validators.email]),
+      }),
+      gender: new FormControl('male'),
+      hobbies: new FormArray([])
+    });
+  }
+
+  onSubmit() {
+    console.log(this.signupForm.value);
+  }
+
+  onAddHobby() {
+    const control = new FormControl(null, Validators.required);
+    this.hobbies.push(control);
+  }
+}
+
+```  
+
+- add the button and input form to the comp.html 
+
+```
+<div>
+  <h4>Enter Your Hobbies</h4>
+  <button
+    (click)="onAddHobby()"
+    class="btn btn-warning btn-sm"
+    type="button">
+    Add Hobby
+  </button>
+  <br>
+</div>
+
+  <div
+    formArrayName="hobbies"
+    class="form-group"
+    *ngFor="let hobbyControl of hobbies.controls; let i = index">
+    <input
+      [formControlName]="i"
+      class="form-control"
+      type="text">
+  </div>
+```
+
+### CREATING CUSTOM VALIDATORS
+
+- update comp.ts, create a local array forbiddenUsernames
+- create the forbiddenNames method, checking the indexof -1 means that the name entered does exist in the search
+- add the this.forbiddenNames.bind(this) to the username, the .bind(this) means the class, without it there is an error because it doesn't know what this referes to
+
+```
+export class MaxReactiveComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm: FormGroup;
+  forbiddenUsernames = ['Chris', 'Anna'];
+
+  get hobbies() {
+    return this.signupForm.get('hobbies') as FormArray;
+  }
+
+  constructor() { }
+
+  ngOnInit() {
+    this.createForm();
+  }
+
+  createForm() {
+    this.signupForm = new FormGroup({
+      userData: new FormGroup({
+        username: new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+        email: new FormControl(null, [Validators.required, Validators.email]),
+      }),
+      gender: new FormControl('male'),
+      hobbies: new FormArray([])
+    });
+  }
+
+  onSubmit() {
+    console.log(this.signupForm.value);
+  }
+
+  onAddHobby() {
+    const control = new FormControl(null, Validators.required);
+    this.hobbies.push(control);
+  }
+
+  forbiddenNames(control: FormControl): {[s: string]: boolean} {
+    if (this.forbiddenUsernames.indexOf(control.value) !== -1) {
+      return {nameIsForbidden: true};
+    }
+    return null;
+  }
+}
+```
+
+- ADDING THE ERROR CODE BASED ON THE CUSTOM ERROR
+- update the comp.html
+
+```
+        <div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control">
+            <span
+              *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
+              class="text-danger">
+              <span *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']">This name is invalid!</span>
+              <span *ngIf="signupForm.get('userData.username').errors['required']">This field is required!</span>
+            </span>
+        </div>
+```
+
+### CUSTOM ASYNC VALIDATOR
+
+- in case it needs to check with a server to verify the email or some other field
+- add forbidden emails method 
+- update the signupform.email to use the validator
+
+```
+  createForm() {
+    this.signupForm = new FormGroup({
+      userData: new FormGroup({
+        username: new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+        email: new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails)
+      }),
+      gender: new FormControl('male'),
+      hobbies: new FormArray([])
+    });
+  }
+  forbiddenEmails(control: FormControl): Promise<any> | Observable<any> {
+    const promise = new Promise<any>((resolve, reject) => {
+      setTimeout(() => {
+        if (control.value === 'test@test.com') {
+          resolve({emailIsForbidden: true});
+        } else {
+          resolve(null);
+        }
+      }, 1500);
+    });
+    return promise;
+  }
+```
+
+- update the comp.html email field
+
+```
+  <div class="form-group">
+    <label for="email">email</label>
+    <input
+      type="text"
+      id="email"
+      formControlName="email"
+      class="form-control">
+    <span
+      *ngIf="!signupForm.get('userData.email').valid && signupForm.get('userData.email').touched"
+      class="help-block">Please enter a valid email!</span>
+  </div>
+```          
+
+- refresh, in email type: test@test.com and it should return in 1.5 seconds as invalid
+
+### REACTING TO STATUS OR VALUE CHANGES and SETTING AND PATCHING VALUES
+
+- update the createform method
+
+```
+  createForm() {
+    this.signupForm = new FormGroup({
+      userData: new FormGroup({
+        username: new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+        email: new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails)
+      }),
+      gender: new FormControl('male'),
+      hobbies: new FormArray([])
+    });
+    this.signupForm.statusChanges.subscribe(
+      (status) => console.log(status)
+    );
+    this.signupForm.setValue({
+      userData: {
+        username: 'Max',
+        email: 'max@test.com'
+      },
+      gender: 'male',
+      hobbies: []
+    });
+    this.signupForm.patchValue({
+      userData: {
+        username: 'Anna',
+      }
+    });
+  }
+```
+
+### RESETTING THE FORM AFTER SUBMITTING
+
+- update the onsubmit method in the comp.ts
+
+```
+ onSubmit() {
+    console.log(this.signupForm);
+    this.signupForm.reset();
+  }
+```
+
+### HE DOESNT SHOW IN THESE VIDEOS HOW TO USE FORM BUILDERS
+
+#### THE END ANGULAR COURSE - FROM MAX S.
 
 <hr>  
 

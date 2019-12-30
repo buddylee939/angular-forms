@@ -1,3 +1,5 @@
+import { MaxReactiveComponent } from './components/max-reactive/max-reactive.component';
+import { MaxTemplateComponent } from './components/max-template/max-template.component';
 import { ReactiveComponent } from './components/reactive/reactive.component';
 import { CarNewComponent } from './cars/car-new/car-new.component';
 import { TdfComponent } from './components/tdf/tdf.component';
@@ -16,6 +18,8 @@ const routes: Routes = [
   { path: 'car/new', component: CarNewComponent },
   { path: 'tdf', component: TdfComponent },
   { path: 'reactive', component: ReactiveComponent },
+  { path: 'maxt', component: MaxTemplateComponent },
+  { path: 'maxr', component: MaxReactiveComponent },
   { path: 'hero', component: HeroFormComponent },
 ];
 @NgModule({
